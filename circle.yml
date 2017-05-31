@@ -16,8 +16,6 @@ dependencies:
     - /usr/local/android-sdk-linux/extras/android/m2repository
 
 test:
-  pre:
-    - ./gradlew clean --console=plain
   override:
-    - ./gradlew check  --console=plain:
+    - ./gradlew release --console=plain:
         timeout: 900

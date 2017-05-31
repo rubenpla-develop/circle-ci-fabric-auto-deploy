@@ -7,7 +7,7 @@ ext.loadVersionCode = {
 }
 
 task incrementVersionCode {
-    dependsOn clean
+    dependsOn(["clean", "check"])
     doLast {
         Properties props = new Properties()
         File propsFile = releasePropertiesFile()
@@ -28,5 +28,14 @@ task commitVersionIncrementChanges(type:Exec) {
 
 task release {
     group "release"
-    dependsOn commitVersionIncrementChanges
+}
+
+afterEvaluate {
+    def isRunningOnDevelop = System.getenv("CIRCLE_BRANCH").equals("develop")
+    if(isRunningOnDevelop)
+        release.dependsOn commitVersionIncrementChanges
+    else
+        release.dependsOn(["clean", "check"])
+
+    check.mustRunAfter clean
 }
