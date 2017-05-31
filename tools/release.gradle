@@ -1,0 +1,15 @@
+def releasePropertiesFile = { rootProject.file('tools/release.properties') }
+
+ext.loadVersionCode = {
+    Properties props = new Properties()
+    props.load(releasePropertiesFile().newDataInputStream())
+    props.getProperty('versionCode').toInteger()
+}
+
+ext.incrementVersionCode = {
+    Properties props = new Properties()
+    File propsFile = releasePropertiesFile()
+    props.load(propsFile.newDataInputStream())
+    props.setProperty('versionCode', (props.getProperty('versionCode').toInteger() + 1).toString())
+    props.store(propsFile.newWriter(), null)
+}
