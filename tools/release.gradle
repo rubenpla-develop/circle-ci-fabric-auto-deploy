@@ -21,8 +21,12 @@ task commitVersionIncrementChanges(type:Exec) {
     workingDir '../'
     executable "sh"
     group "release"
-
-    args "-c", "git add tools/release.properties && git commit -am \"app: version code bump to release\" && git push"
+    args "-c",
+            "git config user.email \"ppgsalomao@gmail.com\" && " +
+            "git config user.name \"Pedro Salomão\" && " +
+            "git add tools/release.properties && " +
+            "git commit -am \"app: version code bump to release\" && " +
+            "git push"
     dependsOn incrementVersionCode
 }
 
