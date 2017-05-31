@@ -6,10 +6,27 @@ ext.loadVersionCode = {
     props.getProperty('versionCode').toInteger()
 }
 
-ext.incrementVersionCode = {
-    Properties props = new Properties()
-    File propsFile = releasePropertiesFile()
-    props.load(propsFile.newDataInputStream())
-    props.setProperty('versionCode', (props.getProperty('versionCode').toInteger() + 1).toString())
-    props.store(propsFile.newWriter(), null)
+task incrementVersionCode {
+    dependsOn clean
+    doLast {
+        Properties props = new Properties()
+        File propsFile = releasePropertiesFile()
+        props.load(propsFile.newDataInputStream())
+        props.setProperty('versionCode', (props.getProperty('versionCode').toInteger() + 1).toString())
+        props.store(propsFile.newWriter(), null)
+    }
+}
+
+task commitVersionIncrementChanges(type:Exec) {
+    workingDir '../'
+    executable "sh"
+    group "release"
+
+    args "-c", "git add tools/release.properties && git commit -am \"app: version code bump to release\" && git push"
+    dependsOn incrementVersionCode
+}
+
+task release {
+    group "release"
+    dependsOn commitVersionIncrementChanges
 }
